@@ -41,10 +41,11 @@ export const defaultConfig: Config = {
     ],
     captcha_type: 'none',
     password_min_entropy: 0,
-    wizard_step: undefined,
+    wizard_step: "false",
     barong_upload_size_min_range: '1',
     barong_upload_size_max_range: '20',
     themeSwitcher: 'visible',
+    useSharedLayout: "true",
 };
 
 export const Cryptobase = {
@@ -91,3 +92,4 @@ export const wizardStep = () => String(Cryptobase.config.wizard_step || '1');
 export const barongUploadSizeMinRange = Number(Cryptobase.config.barong_upload_size_min_range || '1');
 export const barongUploadSizeMaxRange = Number(Cryptobase.config.barong_upload_size_max_range || '20');
 export const themeSwitcher = () => Cryptobase.config.themeSwitcher;
+export const useSharedLayout = () => convertToBoolean(Cryptobase.config.useSharedLayout);

@@ -4,12 +4,13 @@ import * as ReactGA from 'react-ga';
 import { IntlProvider } from 'react-intl';
 import { useSelector, useDispatch } from 'react-redux';
 import { Router } from 'react-router';
-import { gaTrackerKey } from './api';
+import { gaTrackerKey, useSharedLayout } from './api';
 import { ErrorWrapper } from './containers';
 import { useRangerConnectFetch, useSetMobileDevice } from './hooks';
 import * as mobileTranslations from './mobile/translations';
 import { configsFetch, selectCurrentLanguage, selectMobileDeviceState } from './modules';
 import { languageMap } from './translations';
+import { SharedLayout } from './components';
 
 const gaKey = gaTrackerKey();
 const browserHistory = createBrowserHistory();
@@ -46,6 +47,32 @@ const getTranslations = (lang: string, isMobileDevice: boolean) => {
 
     return languageMap[lang];
 };
+
+const Layout = () => {
+    const isMobileDevice = useSelector(selectMobileDeviceState);
+
+    if (browserHistory.location.pathname === '/setup' || !isMobileDevice) {
+        return (
+            <React.Fragment>
+                <SharedLayout>
+                    <CustomizationContainer />
+                    <AlertsContainer />
+                    <P2PAlertsContainer />
+                    <LayoutContainer />
+                </SharedLayout>
+            </React.Fragment>
+        );
+    }
+
+    return (
+        <div className="pg-mobile-app">
+            <SharedLayout>
+                <AlertsContainer/>
+                <LayoutContainer/>
+            </SharedLayout>
+        </div>
+    );
+}
 
 const RenderDeviceContainers = () => {
     const isMobileDevice = useSelector(selectMobileDeviceState);
@@ -90,7 +117,7 @@ export const App = () => {
             <Router history={browserHistory}>
                 <ErrorWrapper>
                     <React.Suspense fallback={null}>
-                        <RenderDeviceContainers />
+                        {useSharedLayout() ? <Layout /> : <RenderDeviceContainers />}
                     </React.Suspense>
                 </ErrorWrapper>
             </Router>
